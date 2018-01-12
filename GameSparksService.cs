@@ -6,7 +6,7 @@ using GameSparksRealTime;
 
 namespace GSCSharpExample
 {
-    public class GameSparksService
+    public static class GameSparksService
     {
         /**
          * Initialize GameSparks
@@ -19,7 +19,7 @@ namespace GSCSharpExample
             string matchShortCode)
         {
             const int skill = 0;
-            var name = DateTime.UtcNow.ToShortTimeString();
+            var name = DateTime.UtcNow.ToLongTimeString();
 
             GS.Initialise(new GSPlatform(apiKey, apiSecret, apiCredential));
             GS.TraceMessages = false;
@@ -36,6 +36,15 @@ namespace GSCSharpExample
         }
 
         /**
+         * Signout and Shutdown GameSparks
+         */
+        public static void Shutdown()
+        {
+            EndSessionRequest();
+            GS.ShutDown();
+        }
+
+        /**
          * Register a GameSparks Player
          */
         private static void Register(string username, string password, Action onReg)
@@ -49,7 +58,7 @@ namespace GSCSharpExample
                 if (r.HasErrors) Console.WriteLine("RegistrationError: {0}", r.JSONString);
                 else
                 {
-                    Console.WriteLine("Registration Successful");
+                    Console.WriteLine("Registration Successful, Username: {0}", r.DisplayName);
                     onReg();
                 }
             });
@@ -67,6 +76,16 @@ namespace GSCSharpExample
             {
                 if (r.HasErrors) Console.WriteLine("MatchmakingError: {0}", r.JSONString);
                 else Console.WriteLine("MatchmakingRequest Successful");
+            });
+        }
+
+        private static void EndSessionRequest()
+        {
+            var req = new EndSessionRequest();
+            req.Send(r =>
+            {
+                if (r.HasErrors) Console.WriteLine("EndSessionError: {0}", r.JSONString);
+                else Console.WriteLine("EndSessionRequest Successful");
             });
         }
     }

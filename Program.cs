@@ -1,9 +1,12 @@
-﻿namespace GSCSharpExample
+﻿using System;
+
+namespace GSCSharpExample
 {
-    class MainClass
+    internal static class MainClass
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Press ESC to stop");
             GameSparksRtService.Initialize();
             GameSparksService.Intialize(
                 GameSparksConfig.ApiKey,
@@ -11,8 +14,15 @@
                 GameSparksConfig.ApiCredential,
                 GameSparksConfig.MatchShortCode);
 
-            while (true) { } // Should never return
-            // ReSharper disable once FunctionNeverReturns
+            while (true)
+            {
+                if (Console.ReadKey(true).Key == ConsoleKey.Escape) continue;
+                GameSparksRtService.Shutdown();
+                GameSparksService.Shutdown();
+                Console.WriteLine("Press Any Key to close");
+                Console.ReadKey();
+                return;
+            }
         }
     }
 }

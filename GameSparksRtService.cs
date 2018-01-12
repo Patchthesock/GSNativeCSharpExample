@@ -4,7 +4,7 @@ using GameSparks.RT;
 
 namespace GSCSharpExample
 {
-    public class GameSparksRtService
+    public static class GameSparksRtService
     {
         public static void Initialize()
         {
@@ -13,6 +13,11 @@ namespace GSCSharpExample
                 if (r.Port == null) return;
                 StartRtSession(new RtSession(r.Host, (int) r.Port, r.AccessToken));
             };
+        }
+
+        public static void Shutdown()
+        {
+            
         }
 
         private static void StartRtSession(RtSession s)

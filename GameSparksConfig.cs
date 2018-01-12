@@ -1,5 +1,4 @@
-﻿using System;
-namespace GSCSharpExample
+﻿namespace GSCSharpExample
 {
     public static class GameSparksConfig
     {
