@@ -8,7 +8,6 @@ namespace GSCSharpExample
     {
         public GameSparksRtService()
         {
-            _rtConnected = false;
             _pingTimer = new Timer();
             _sessionTimer = new Timer();
         }
@@ -34,7 +33,6 @@ namespace GSCSharpExample
                     .Build();
 
                 _session.Start(); // Start Session
-                _rtConnected = true;
 
                 _sessionTimer.Elapsed += (source, e) => { _session.Update(); };
                 _sessionTimer.Interval = 300;
@@ -52,7 +50,7 @@ namespace GSCSharpExample
          */
         public void StopRealTimeSession()
         {
-            if (!_rtConnected) return;
+            if (_session.ConnectState == GameSparksRT.ConnectState.Disconnected) return;
             Console.WriteLine("Shutting down Game Session...");
             _session.Stop();
             _pingTimer.Stop();
@@ -66,7 +64,7 @@ namespace GSCSharpExample
             if (p.Data == null) return;
             switch (p.OpCode)
             {
-                case (int)OpCode.Ping:
+                case (int) OpCode.Ping:
                     {
                         var r = p.Data.GetInt(1);
                         var l = p.Data.GetLong(2);
@@ -74,7 +72,7 @@ namespace GSCSharpExample
                         SendPong((int)r, (long)l);
                         break;
                     }
-                case (int)OpCode.Pong:
+                case (int) OpCode.Pong:
                     {
                         var r = p.Data.GetInt(1);
                         var ping = p.Data.GetLong(2);
@@ -90,7 +88,7 @@ namespace GSCSharpExample
 
         private void SendPing()
         {
-            if (!_rtConnected) return;
+            if (_session.ConnectState == GameSparksRT.ConnectState.Disconnected) return;
             var d = new RTData();
             d.SetInt(1, GetNextRequestId());
             d.SetLong(2, DateTime.UtcNow.Ticks);
@@ -100,7 +98,7 @@ namespace GSCSharpExample
 
         private void SendPong(int requestId, long pingTime)
         {
-            if (!_rtConnected) return;
+            if (_session.ConnectState == GameSparksRT.ConnectState.Disconnected) return;
             var d = new RTData();
             d.SetInt(1, requestId);
             d.SetLong(2, pingTime);
@@ -122,7 +120,6 @@ namespace GSCSharpExample
             Pong = 999
         }
 
-        private bool _rtConnected;
         private IRTSession _session;
         private int _requestIdCounter;
         private readonly Timer _pingTimer;
