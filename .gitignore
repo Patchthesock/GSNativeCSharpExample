@@ -1,6 +1,7 @@
 .DS_STORE
 bin/
 obj/
+.vs/
 .vscode/
 .idea/
 GSCSharpExample.userprefs
