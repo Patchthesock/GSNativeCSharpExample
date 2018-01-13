@@ -4,67 +4,73 @@ using GameSparks.RT;
 
 namespace GSCSharpExample
 {
-    public static class GameSparksRtService
+    public class GameSparksRtService
     {
-        public static void Initialize()
+        public GameSparksRtService()
+        {
+            _timer = new Timer();
+        }
+        
+        /**
+         * Starts a Real Time session onMatchFound
+         */
+        public void Initialize()
         {
             GameSparks.Api.Messages.MatchFoundMessage.Listener += r =>
             {
                 if (r.Port == null) return;
-                StartRtSession(new RtSession(r.Host, (int) r.Port, r.AccessToken));
+                Console.WriteLine("Creating New Game Session...");
+                Console.WriteLine("Host: {0} Port: {1}", r.Host, r.Port);
+                Console.WriteLine("Token: {0}", r.AccessToken);
+                Console.WriteLine("Starting Session...");
+                _session = new GameSparksRTSessionBuilder()
+                    .SetHost(r.Host)
+                    .SetPort((int) r.Port)
+                    .SetConnectToken(r.AccessToken)
+                    .SetListener(new RealTimeListener(OnPacketReceived))
+                    .Build();
+                _session.Start();
+
+                _timer.Elapsed += (source, e) => { _session.Update(); };
+                _timer.Interval = 300;
+                _timer.Enabled = true;
             };
         }
 
-        public static void Shutdown()
+        /**
+         * Shuts down a session 
+         */
+        public void StopRealTimeSession()
         {
+            Console.WriteLine("Shutting down Game Session...");
+            _session.Stop();
+            _timer.Stop();
+            _timer.Enabled = false;
+        }
+
+        private void OnPacketReceived(RTPacket p)
+        {
+            if (p.OpCode != 998) return;
+            if (p.Data == null) return;
+            var r = p.Data.GetInt(1);
+            var l = p.Data.GetLong(2);
+            if (r == null || l == null) return;
             
+            var d = new RTData();
+            d.SetInt(1, (int) r);
+            d.SetLong(2, (long) l);
+            d.SetLong(3, DateTime.UtcNow.Ticks);
+            _session.SendRTData(999, GameSparksRT.DeliveryIntent.RELIABLE, d);
         }
 
-        private static void StartRtSession(RtSession s)
-        {
-            var sess = new GameSession();
-            sess.StartSession(s.Port, s.Token, s.Host);
-
-            var t = new Timer();
-            t.Elapsed += sess.OnTimedEvent;
-            t.Interval = 300;
-            t.Enabled = true;
-        }
-
-        private class RtSession
-        {
-            public readonly int Port;
-            public readonly string Host;
-            public readonly string Token;
-
-            public RtSession(string host, int port, string token)
-            {
-                Host = host;
-                Port = port;
-                Token = token;
-            }
-        }
+        private IRTSession _session;
+        private readonly Timer _timer;
         
-        private class GameSession : IRTSessionListener
+        private class RealTimeListener : IRTSessionListener
         {
-            public void StartSession(int port, string token, string host)
+            public RealTimeListener(Action<RTPacket> onPacketRecevied)
             {
-                Console.WriteLine("Creating New Game Session...");
-                Console.WriteLine("Host: {0} Port: {1}", host, port);
-                Console.WriteLine("Token: {0}", token);
-                Console.WriteLine("Starting Session...");
-                _session = new GameSparksRTSessionBuilder()
-                    .SetPort(port)
-                    .SetConnectToken(token)
-                    .SetHost(host)
-                    .SetListener(this)
-                    .Build();
-                _session.Start();
-            }
-
-            public void OnTimedEvent(object source, ElapsedEventArgs e)
-            {
-                _session.Update();
+                _onPacketReceivedListener = onPacketRecevied;
             }
 
             public void OnPlayerConnect(int peerId)
@@ -85,9 +91,10 @@ namespace GSCSharpExample
             public void OnPacket(RTPacket packet)
             {
                 Console.WriteLine("Packet Received - OpCode: {0}, Data: {1}", packet.OpCode, packet.Data);
+                _onPacketReceivedListener(packet);
             }
             
-            private IRTSession _session;
+            private readonly Action<RTPacket> _onPacketReceivedListener;
         }
     }
 }

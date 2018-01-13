@@ -7,7 +7,9 @@ namespace GSCSharpExample
         public static void Main(string[] args)
         {
             Console.WriteLine("Press ESC to stop");
-            GameSparksRtService.Initialize();
+            var rtService = new GameSparksRtService();
+            rtService.Initialize();
+            
             GameSparksService.Intialize(
                 GameSparksConfig.ApiKey,
                 GameSparksConfig.ApiSecret,
@@ -17,7 +19,7 @@ namespace GSCSharpExample
             while (true)
             {
                 if (Console.ReadKey(true).Key == ConsoleKey.Escape) continue;
-                GameSparksRtService.Shutdown();
+                rtService.StopRealTimeSession();
                 GameSparksService.Shutdown();
                 Console.WriteLine("Press Any Key to close");
                 Console.ReadKey();
