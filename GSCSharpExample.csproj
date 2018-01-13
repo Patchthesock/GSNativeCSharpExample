@@ -43,10 +43,11 @@
   <ItemGroup>
     <Compile Include="GameSparksRtService.cs" />
     <Compile Include="GameSparksService.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Latency.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GSPlatform.cs" />
-    <Compile Include="GameSparksConfig.cs" />
+    <Compile Include="Config.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

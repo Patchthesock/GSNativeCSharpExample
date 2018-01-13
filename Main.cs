@@ -4,23 +4,25 @@ namespace GSCSharpExample
 {
     internal static class MainClass
     {
+        
         /**
          * GSCSharpExample
          * Stephen Callaghan (stephen.callaghan@gamesparks.com)
          * Edited - 2018/01/13
          * Created - 2018/01/12
          */
+        
         public static void Main(string[] args)
         {
             Console.WriteLine("Press ESC to stop");
             var rtService = new GameSparksRtService();
-            rtService.Initialize();
+            rtService.Initialize(Config.SendRegularPing);
             
             GameSparksService.Intialize(
-                GameSparksConfig.ApiKey,
-                GameSparksConfig.ApiSecret,
-                GameSparksConfig.ApiCredential,
-                GameSparksConfig.MatchShortCode);
+                Config.ApiKey,
+                Config.ApiSecret,
+                Config.ApiCredential,
+                Config.MatchShortCode);
 
             while (true)
             {
