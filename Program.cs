@@ -4,6 +4,12 @@ namespace GSCSharpExample
 {
     internal static class MainClass
     {
+        /**
+         * GSCSharpExample
+         * Stephen Callaghan (stephen.callaghan@gamesparks.com)
+         * Edited - 2018/01/13
+         * Created - 2018/01/12
+         */
         public static void Main(string[] args)
         {
             Console.WriteLine("Press ESC to stop");

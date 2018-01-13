@@ -21,6 +21,11 @@ namespace GSCSharpExample
             const int skill = 0;
             var name = DateTime.UtcNow.ToLongTimeString();
 
+            if (string.IsNullOrEmpty(apiKey)) Console.WriteLine("Warning: apiKey Empty");
+            if (string.IsNullOrEmpty(apiSecret)) Console.WriteLine("Warning: apiSecret Empty");
+            if (string.IsNullOrEmpty(apiCredential)) Console.WriteLine("Warning: apiCredential is Empty");
+            if (string.IsNullOrEmpty(matchShortCode)) Console.WriteLine("Warning: matchShortCode is Empty");
+            
             GS.Initialise(new GSPlatform(apiKey, apiSecret, apiCredential));
             GS.TraceMessages = false;
             GS.GameSparksAvailable = a =>
