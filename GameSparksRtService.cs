@@ -10,7 +10,7 @@ namespace GSCSharpExample
         {
             _timer = new Timer();
         }
-        
+
         /**
          * Starts a Real Time session onMatchFound
          */
@@ -25,7 +25,7 @@ namespace GSCSharpExample
                 Console.WriteLine("Starting Session...");
                 _session = new GameSparksRTSessionBuilder()
                     .SetHost(r.Host)
-                    .SetPort((int) r.Port)
+                    .SetPort((int)r.Port)
                     .SetConnectToken(r.AccessToken)
                     .SetListener(new RealTimeListener(OnPacketReceived))
                     .Build();
@@ -55,17 +55,19 @@ namespace GSCSharpExample
             var r = p.Data.GetInt(1);
             var l = p.Data.GetLong(2);
             if (r == null || l == null) return;
-            
+
+            var op = 999;
             var d = new RTData();
-            d.SetInt(1, (int) r);
-            d.SetLong(2, (long) l);
+            d.SetInt(1, (int)r);
+            d.SetLong(2, (long)l);
             d.SetLong(3, DateTime.UtcNow.Ticks);
-            _session.SendRTData(999, GameSparksRT.DeliveryIntent.RELIABLE, d);
+            _session.SendRTData(op, GameSparksRT.DeliveryIntent.RELIABLE, d);
+            Console.WriteLine("Packet Sent - OpCode: {0}", op);
         }
 
         private IRTSession _session;
         private readonly Timer _timer;
-        
+
         private class RealTimeListener : IRTSessionListener
         {
             public RealTimeListener(Action<RTPacket> onPacketRecevied)
@@ -87,13 +89,13 @@ namespace GSCSharpExample
             {
                 Console.WriteLine("Server Ready: {0}", ready);
             }
-            
+
             public void OnPacket(RTPacket packet)
             {
                 Console.WriteLine("Packet Received - OpCode: {0}, Data: {1}", packet.OpCode, packet.Data);
                 _onPacketReceivedListener(packet);
             }
-            
+
             private readonly Action<RTPacket> _onPacketReceivedListener;
         }
     }
