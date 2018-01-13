@@ -31,13 +31,13 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="BouncyCastle_GameSparks">
-      <HintPath>..\packages\GameSparksSDK.1.0.7\lib\net461\BouncyCastle_GameSparks.dll</HintPath>
+      <HintPath>packages\GameSparksSDK.1.0.7\lib\net461\BouncyCastle_GameSparks.dll</HintPath>
     </Reference>
     <Reference Include="GameSparksRT">
-      <HintPath>..\packages\GameSparksSDK.1.0.7\lib\net461\GameSparksRT.dll</HintPath>
+      <HintPath>packages\GameSparksSDK.1.0.7\lib\net461\GameSparksRT.dll</HintPath>
     </Reference>
     <Reference Include="GameSparksSDKWin7">
-      <HintPath>..\packages\GameSparksSDK.1.0.7\lib\net461\GameSparksSDKWin7.dll</HintPath>
+      <HintPath>packages\GameSparksSDK.1.0.7\lib\net461\GameSparksSDKWin7.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
