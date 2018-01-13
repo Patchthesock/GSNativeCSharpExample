@@ -42,6 +42,7 @@ namespace GSCSharpExample
          */
         public void StopRealTimeSession()
         {
+            if (_session == null) return;
             Console.WriteLine("Shutting down Game Session...");
             _session.Stop();
             _timer.Stop();
